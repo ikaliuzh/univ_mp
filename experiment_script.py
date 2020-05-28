@@ -50,6 +50,9 @@ print(f"Initialization : {time.time() - start_time}")
 
 
 def simulate_dialog(alice, bob):
+    """
+    dialog results are computed for only one of the participants 
+    """
     global net
     D = net.edges[alice, bob]['D']
     wA = net.nodes[alice]['w']
@@ -105,18 +108,12 @@ def calc_brntrial(v, n):
         for v_i in range(v + 1, n)
     }
 
-
+#precalculated bernoulli trial results
 brntrial_res = {}
 
 
 @logtime
 def simulate_session():
-    """ Unfortunately, significant difference in performance isn't obtained.
-    Parallelism is performed over multiprocess computations on vertexes, each
-    process is given a vertex number and computes its dialogues with every
-    relevant neighbour. We consider the directed graph.
-    We avoid final bookkeeping and aggregation of results at the expanse of
-    second computations of every dialogue per session(e.g. (A, B) and (B, A))"""
     global net, brntrial_res
     # Calculate bernoulli trials for the session
     if __name__ == '__main__':
@@ -128,7 +125,7 @@ def simulate_session():
         )
         pool.close()
         pool.join()
-
+    # Merge the results 
         for chunk in brntrial_chunks:
             for key, value in chunk.items():
                 brntrial_res[key] = value
@@ -137,7 +134,7 @@ def simulate_session():
     if __name__ == "__main__":
         # pool initialization takes around 0.04
         pool = mp.Pool(mp.cpu_count())
-
+        # we simulate all the dialogs for a particular vertex
         results = pool.starmap(
             simulate_group_of_dialogs, (
                 (vertex, len(net.nodes)) for vertex in range(len(net.nodes))
