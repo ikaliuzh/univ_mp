@@ -26,4 +26,4 @@ Average time of session with initial performance
 119.33	 
 (in hundredths of a second)
 
-Each session comprises two steps: 1) precompute the bernoulli trials and 2) to simulate dialogs considering the bernoulli trials results 
+Each session comprises two steps: 1) precompute the bernoulli trials in different processes and 2) to simulate dialogs considering the results of the first stage. 
